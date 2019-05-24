@@ -31,4 +31,5 @@ dependencies {
 	implementation('org.twitter4j:twitter4j-core:4.0.7')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 	testImplementation('org.springframework.kafka:spring-kafka-test')
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9'
 }
