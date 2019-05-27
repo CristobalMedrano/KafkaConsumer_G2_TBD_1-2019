@@ -2,7 +2,6 @@ package com.tbd.consumer.listener;
 
 import com.google.gson.Gson;
 import com.mongodb.Mongo;
-import com.mongodb.client.MongoDatabase;
 import com.tbd.consumer.model.Tweet;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,7 @@ public class KafkaConsumer {
     */
     Mongo mongo = new Mongo("localhost", 27017);
     DB db = mongo.getDB("ligaChilenaDB");
+    DBCollection dbCollection = db.getCollection("ligaChilena");
 
     @KafkaListener(topics = "${kafka.topic}", groupId = "${zookeeper.group-id}", containerFactory = "tweetKafkaListenerFactory")
     public void consumer(Tweet tweet)
@@ -24,7 +24,6 @@ public class KafkaConsumer {
         Gson gson = new Gson();
         String json = gson.toJson(tweet);
         BasicDBObject basicDBObject = new BasicDBObject("Tweet", json );
-        DBCollection dbCollection = db.getCollection("ligaChilena");
         dbCollection.insert(basicDBObject);
         //System.out.println("Consume"+ tweet.toString());
 
