@@ -1,16 +1,32 @@
 package com.tbd.consumer.listener;
 
+import com.google.gson.Gson;
+import com.mongodb.Mongo;
+import com.mongodb.client.MongoDatabase;
 import com.tbd.consumer.model.Tweet;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
 
 @Service
 public class KafkaConsumer {
-    @Value("${zookeeper.group-id}")
-    private static String zookeeperGroupId;
-    @KafkaListener(topics = "twitterJsonChile6", groupId = "0", containerFactory = "tweetKafkaListenerFactory")
-    public void consumer(Tweet tweet){
-        System.out.println("Consume message"+ tweet.toString());
+
+    /*MongoClient mongo = new MongoClient("localhost",27017);
+    */
+    Mongo mongo = new Mongo("localhost", 27017);
+    DB db = mongo.getDB("ligaChilenaDB");
+
+    @KafkaListener(topics = "${kafka.topic}", groupId = "${zookeeper.group-id}", containerFactory = "tweetKafkaListenerFactory")
+    public void consumer(Tweet tweet)
+    {
+        Gson gson = new Gson();
+        String json = gson.toJson(tweet);
+        BasicDBObject basicDBObject = new BasicDBObject("Tweet", json );
+        DBCollection dbCollection = db.getCollection("ligaChilena");
+        dbCollection.insert(basicDBObject);
+        //System.out.println("Consume"+ tweet.toString());
+
     }
 }

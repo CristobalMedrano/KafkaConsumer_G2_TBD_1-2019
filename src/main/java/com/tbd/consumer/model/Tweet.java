@@ -93,6 +93,6 @@ public class Tweet {
 
     @Override
     public String toString() {
-        return "{id="+ getId() +", name="+ getName() +", text="+ getText() +", like="+ getLike() +", followers="+ getFollowers() +", geoLocation="+ getGeoLocation() +", userLocation="+ getUserLocation() +", retweet="+ getRetweet() +"}";
+        return "{'id':"+ getId() +", 'name':'"+ getName() +"', 'text':'"+ getText() +"', 'like':"+ getLike() +", 'followers':"+ getFollowers() +", 'geoLocation':'"+ getGeoLocation() +"', 'userLocation':'"+ getUserLocation() +"', 'retweet':"+ getRetweet() +"}";
     }
 }
