@@ -7,6 +7,8 @@ import java.util.Date;
 public class Tweet {
 
     private Long id;
+    private Double positive;
+    private Double negative;
     private String name;
     private String text;
     private Integer like;
@@ -20,8 +22,10 @@ public class Tweet {
         super();
     }
 
-    public Tweet(Long id, String name, String text, Integer like, Integer followers, GeoLocation geoLocation, String userLocation, Integer retweet, Date publicationDate) {
+    public Tweet(Long id, Double positive, Double negative, String name, String text, Integer like, Integer followers, GeoLocation geoLocation, String userLocation, Integer retweet, Date publicationDate) {
         this.id = id;
+        this.positive = positive;
+        this.negative = negative;
         this.name = name;
         this.text = text;
         this.like = like;
@@ -98,6 +102,22 @@ public class Tweet {
 
     public void setRetweet(Integer retweet) {
         this.retweet = retweet;
+    }
+
+    public Double getPositive() {
+        return positive;
+    }
+
+    public void setPositive(Double positive) {
+        this.positive = positive;
+    }
+
+    public Double getNegative() {
+        return negative;
+    }
+
+    public void setNegative(Double negative) {
+        this.negative = negative;
     }
 
     @Override
