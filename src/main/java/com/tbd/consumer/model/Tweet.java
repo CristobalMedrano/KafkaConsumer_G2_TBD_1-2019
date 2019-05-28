@@ -1,5 +1,9 @@
 package com.tbd.consumer.model;
 
+import twitter4j.GeoLocation;
+
+import java.util.Date;
+
 public class Tweet {
 
     private Long id;
@@ -10,21 +14,26 @@ public class Tweet {
     private twitter4j.GeoLocation geoLocation;
     private String userLocation;
     private Integer retweet;
+    private Date publicationDate;
 
     public Tweet() {
         super();
     }
 
-    public Tweet(Long id, String name, String text, Integer like, Integer followers, twitter4j.GeoLocation geoLocation, String userLocation, Integer retweet) {
-        super();
-        this.setId(id);
-        this.setName(name);
-        this.setText(text);
-        this.setLike(like);
-        this.setFollowers(followers);
-        this.setGeoLocation(geoLocation);
-        this.setUserLocation(userLocation);
-        this.setRetweet(retweet);
+    public Tweet(Long id, String name, String text, Integer like, Integer followers, GeoLocation geoLocation, String userLocation, Integer retweet, Date publicationDate) {
+        this.id = id;
+        this.name = name;
+        this.text = text;
+        this.like = like;
+        this.followers = followers;
+        this.geoLocation = geoLocation;
+        this.userLocation = userLocation;
+        this.retweet = retweet;
+        this.publicationDate = publicationDate;
+    }
+
+    public Date getPublicationDate() {
+        return publicationDate;
     }
 
     public Long getId() {
