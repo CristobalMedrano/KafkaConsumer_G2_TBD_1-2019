@@ -15,11 +15,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaConsumer {
 
-    MongoClient mongoClient = MongoClients.create();
+    MongoClient mongoClient = MongoClients.create("mongodb://kafkaApi:kafkatbd2019@localhost:27017/?authSource=ligaChilenaDB");
     MongoDatabase data = mongoClient.getDatabase("ligaChilenaDB");
-    MongoCollection<Document> tweetCollection = data.getCollection("ligaChilena");
+    MongoCollection<Document> tweetCollection = data.getCollection("tweets");
 
-    @KafkaListener(topics = "${kafka.topic}", groupId = "${zookeeper.group-id}", containerFactory = "tweetKafkaListenerFactory")
+    @KafkaListener(topics = "${kafka.topic}", groupId = "${zookeeper.group-id}", containerFactory = "kafkaListenerFactory")
     public void consumer(Tweet tweet)
     {
         Gson gson = new Gson();
