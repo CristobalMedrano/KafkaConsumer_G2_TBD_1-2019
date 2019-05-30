@@ -17,7 +17,7 @@ public class KafkaConsumer {
 
     MongoClient mongoClient = MongoClients.create("mongodb://kafkaApi:kafkatbd2019@localhost:27017/?authSource=ligaChilenaDB");
     MongoDatabase data = mongoClient.getDatabase("ligaChilenaDB");
-    MongoCollection<Document> tweetCollection = data.getCollection("tweets");
+    MongoCollection<Document> tweetCollection = data.getCollection("ligaTweets");
 
     @KafkaListener(topics = "${kafka.topic}", groupId = "${zookeeper.group-id}", containerFactory = "kafkaListenerFactory")
     public void consumer(Tweet tweet)
@@ -27,19 +27,5 @@ public class KafkaConsumer {
         BasicDBObject document = (BasicDBObject) JSON.parse(json);
         tweetCollection.insertOne(new Document(document));
 
-        /*Document doc = new Document.parse(json);
-        doc.put("id", tweet.getId());
-        doc.put("name", tweet.getName());
-        doc.put("text", tweet.getText());
-        doc.put("like", tweet.getLike());
-        doc.put("followers", tweet.getFollowers());
-        doc.put("geoLocation", tweet.getGeoLocation());
-        doc.put("userLocation", tweet.getUserLocation());
-        doc.put("retweet", tweet.getRetweet());
-        doc.put("publicationDate", tweet.getPublicationDate());
-        tweetCollection.insertOne(doc);
-        System.out.println(doc.toString());*/
-        //tweetCollection.insertOne();
-        //System.out.println("Consume message"+ tweet.toString());
     }
 }
