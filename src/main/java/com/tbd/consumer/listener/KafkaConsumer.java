@@ -1,5 +1,6 @@
 package com.tbd.consumer.listener;
 
+import com.tbd.consumer.Analisis.Classifier;
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoClient;
@@ -8,38 +9,45 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.util.JSON;
 import com.tbd.consumer.model.Tweet;
+import com.tbd.consumer.model.TweetDate;
 import org.bson.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import java.util.HashMap;
 
 @Service
 public class KafkaConsumer {
 
+    @Autowired
+    private Classifier classifier;
+
+    private HashMap<String, Double> stadistics = new HashMap<String, Double>();
+
     MongoClient mongoClient = MongoClients.create("mongodb://kafkaApi:kafkatbd2019@localhost:27017/?authSource=ligaChilenaDB");
     MongoDatabase data = mongoClient.getDatabase("ligaChilenaDB");
-    MongoCollection<Document> tweetCollection = data.getCollection("tweets");
+    MongoCollection<Document> tweetCollection = data.getCollection("ligaTweets");
 
     @KafkaListener(topics = "${kafka.topic}", groupId = "${zookeeper.group-id}", containerFactory = "kafkaListenerFactory")
-    public void consumer(Tweet tweet)
+    public void consumer(TweetDate tweetDate)
     {
+        stadistics = classifier.classify(tweetDate.getText());
+
+        Tweet tweet = new Tweet(
+                tweetDate.getId(),
+                stadistics.get("positive"),
+                stadistics.get("negative"),
+                tweetDate.getName(),
+                tweetDate.getText(),
+                tweetDate.getLike(),
+                tweetDate.getFollowers(),
+                tweetDate.getGeoLocation(),
+                tweetDate.getUserLocation(),
+                tweetDate.getRetweet(),
+                tweetDate.getPublicationDate());
         Gson gson = new Gson();
         String json = gson.toJson(tweet);
         BasicDBObject document = (BasicDBObject) JSON.parse(json);
         tweetCollection.insertOne(new Document(document));
-
-        /*Document doc = new Document.parse(json);
-        doc.put("id", tweet.getId());
-        doc.put("name", tweet.getName());
-        doc.put("text", tweet.getText());
-        doc.put("like", tweet.getLike());
-        doc.put("followers", tweet.getFollowers());
-        doc.put("geoLocation", tweet.getGeoLocation());
-        doc.put("userLocation", tweet.getUserLocation());
-        doc.put("retweet", tweet.getRetweet());
-        doc.put("publicationDate", tweet.getPublicationDate());
-        tweetCollection.insertOne(doc);
-        System.out.println(doc.toString());*/
-        //tweetCollection.insertOne();
-        //System.out.println("Consume message"+ tweet.toString());
     }
 }

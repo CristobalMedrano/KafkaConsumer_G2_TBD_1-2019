@@ -1,6 +1,7 @@
 package com.tbd.consumer.configuration;
 
 import com.tbd.consumer.model.Tweet;
+import com.tbd.consumer.model.TweetDate;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,27 +20,27 @@ import java.util.Map;
 @EnableKafka
 @Configuration
 public class KafkaConfiguration {
+
     @Value("${kafka.bootstrap-servers}")
     private String kafkaBootstrapServers;
-    //@Value("${kafka.topic}")
-    //private String kafkaTopic;
+
     @Value("${zookeeper.group-id}")
     private String zookeeperGroupId;
 
     @ConditionalOnMissingBean(ConsumerFactory.class)
-    public ConsumerFactory<String, Tweet> consumerFactory() {
+    public ConsumerFactory<String, TweetDate> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, zookeeperGroupId);
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new JsonDeserializer<>(Tweet.class));
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new JsonDeserializer<>(TweetDate.class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Tweet> kafkaListenerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Tweet> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, TweetDate> kafkaListenerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, TweetDate> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }
