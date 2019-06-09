@@ -1,11 +1,15 @@
 package com.tbd.consumer.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 import twitter4j.GeoLocation;
 
 import java.util.Date;
 
+@Document(indexName="ligachilena",type="tweet",shards=2)
 public class Tweet {
 
+    @Id
     private Long id;
     private Double positive;
     private Double negative;
