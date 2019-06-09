@@ -19,7 +19,7 @@ public class KafkaConsumer {
 
     @Autowired
     TweetRepository tweetRepository;
-    
+
     MongoClient mongoClient = MongoClients.create("mongodb://kafkaApi:kafkatbd2019@localhost:27017/?authSource=ligaChilenaDB");
     MongoDatabase data = mongoClient.getDatabase("ligaChilenaDB");
     MongoCollection<Document> tweetCollection = data.getCollection("chileTweets");
