@@ -11,6 +11,7 @@ import com.mongodb.util.JSON;
 import com.tbd.consumer.model.Tweet;
 import com.tbd.consumer.model.TweetDate;
 import com.tbd.consumer.model.TweetNoDate;
+import com.tbd.consumer.repository.TweetRepository;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -33,12 +34,13 @@ public class KafkaConsumer {
 
     private HashMap<String, Double> stadistics = new HashMap<String, Double>();
 
+    TweetRepository tweetRepository;
     MongoClient mongoClient = MongoClients.create("mongodb://kafkaApi:kafkatbd2019@localhost:27017/?authSource=ligaChilenaDB");
     MongoDatabase data = mongoClient.getDatabase("ligaChilenaDB");
-    MongoCollection<Document> tweetCollection = data.getCollection("ligaTweets");
+    MongoCollection<Document> tweetCollection = data.getCollection("test");
 
     Date newDate = new Date();
-    long curTimeInMs = newDate.getTime() - (5*24*60* 60000) - (60000*60*(1)) - 60000*40;
+    long curTimeInMs = newDate.getTime() - (16*24*60* 60000) - (60000*60*(1)) - 60000*40;
 
     @KafkaListener(topics = "${kafka.topic}", groupId = "${zookeeper.group-id}", containerFactory = "kafkaListenerFactory")
     public void consumer(TweetNoDate tweetNoDate)
@@ -69,6 +71,8 @@ public class KafkaConsumer {
         BasicDBObject document = (BasicDBObject) JSON.parse(json);
         System.out.println(json);
         tweetCollection.insertOne(new Document(document));
+        tweetRepository.save(tweet);
+
     }
 
     private static Date addMinutesToDate(int minutes, long timeInMs){
