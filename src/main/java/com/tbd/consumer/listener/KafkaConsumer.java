@@ -10,13 +10,16 @@ import com.mongodb.util.JSON;
 import com.tbd.consumer.model.Tweet;
 import com.tbd.consumer.repository.TweetRepository;
 import org.bson.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
 public class KafkaConsumer {
 
+    @Autowired
     TweetRepository tweetRepository;
+    
     MongoClient mongoClient = MongoClients.create("mongodb://kafkaApi:kafkatbd2019@localhost:27017/?authSource=ligaChilenaDB");
     MongoDatabase data = mongoClient.getDatabase("ligaChilenaDB");
     MongoCollection<Document> tweetCollection = data.getCollection("chileTweets");
