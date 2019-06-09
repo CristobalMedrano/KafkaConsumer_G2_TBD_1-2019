@@ -47,7 +47,7 @@ public class KafkaConsumer {
     {
         stadistics = classifier.classify(tweetNoDate.getText());
 
-        // fake date
+
         newDate = addMinutesToDate(1 , curTimeInMs);
         curTimeInMs = newDate.getTime();
         DateFormat formatter = new SimpleDateFormat("MMM dd, YYYY, hh:mm:ss a", Locale.US);
@@ -66,6 +66,7 @@ public class KafkaConsumer {
                 tweetNoDate.getUserLocation(),
                 tweetNoDate.getRetweet(),
                 fakeDate);
+        System.out.println(tweet);
         Gson gson = new Gson();
         String json = gson.toJson(tweet);
         BasicDBObject document = (BasicDBObject) JSON.parse(json);
