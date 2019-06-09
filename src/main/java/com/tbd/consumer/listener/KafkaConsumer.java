@@ -8,6 +8,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.util.JSON;
 import com.tbd.consumer.model.Tweet;
+import com.tbd.consumer.repository.TweetRepository;
 import org.bson.Document;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaConsumer {
 
+    TweetRepository tweetRepository;
     MongoClient mongoClient = MongoClients.create("mongodb://kafkaApi:kafkatbd2019@localhost:27017/?authSource=ligaChilenaDB");
     MongoDatabase data = mongoClient.getDatabase("ligaChilenaDB");
-    MongoCollection<Document> tweetCollection = data.getCollection("ligaTweets");
+    MongoCollection<Document> tweetCollection = data.getCollection("chileTweets");
 
     @KafkaListener(topics = "${kafka.topic}", groupId = "${zookeeper.group-id}", containerFactory = "kafkaListenerFactory")
     public void consumer(Tweet tweet)
@@ -26,6 +28,6 @@ public class KafkaConsumer {
         String json = gson.toJson(tweet);
         BasicDBObject document = (BasicDBObject) JSON.parse(json);
         tweetCollection.insertOne(new Document(document));
-
+        tweetRepository.save(tweet);
     }
 }
